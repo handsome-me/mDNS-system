@@ -15,6 +15,8 @@ import { useTheme } from '@/Hooks'
 import { useLazyFetchOneQuery } from '@/Services/modules/users'
 import { changeTheme, ThemeState } from '@/Store/Theme'
 import Zeroconf from 'react-native-zeroconf'
+
+  var net = require('net');
 const zeroconf = new Zeroconf()
 
 const ExampleContainer = () => {
@@ -36,15 +38,47 @@ const ExampleContainer = () => {
     dispatch(changeTheme({ theme, darkMode }))
   }
   console.log("fdfmdfmdkmdf");
+  zeroconf.on('start', () =>  console.log('The scan has started.'))
+  
+  zeroconf.on('found', (f) =>console.log('found the services',f))
+  zeroconf.on("resolved",(data)=>{
+  console.log("data found",data);
+   
+    
+   
+
+  })
   useEffect(()=>{
    
     console.log("Meghraj");
-    zeroconf.scan("http","tcp","local.");
-    zeroconf.publishService('local.sunlighten','_http._tcp','unique121',"8081", 8081);
+   
+    zeroconf.scan("http","tcp","local");
+    zeroconf.unpublishService("sunlightenacp");
+    zeroconf.publishService('http',"tcp","local","Meghraj",12345,{
+    name:"Meghraj",
+    ip:"192.168.0.121"
+  });
 
-    zeroconf.on('start', () => console.log('The scan has started.'))
+
+ 
+// OR, if not shimming via package.json "browser" field:
+// var net = require('react-native-tcp')
+ 
+var server = net.createServer(function(socket:any) {
+  socket.write('excellent!');
+}).listen(12345);
+ 
+var client = net.createConnection(12345);
+ 
+client.on('error', function(error:any) {
+  console.log(error)
+});
+ 
+client.on('data', function(data:any) {
+  console.log('message was received', data)
+});
+
   
-     zeroconf.on('found', (f) => console.log('found the services',f))
 
   },[])
 
@@ -56,65 +90,8 @@ const ExampleContainer = () => {
         Layout.colCenter,
         Gutters.smallHPadding,
       ]}
-    >
-      <View style={[[Layout.colCenter, Gutters.smallHPadding]]}>
-        {/* <Button onPress={()=>{
-
-        }}>Wewewewew</Button> */}
-        <Brand />
-        {(isLoading || isFetching) && <ActivityIndicator />}
-        {!isSuccess ? (
-          <Text style={Fonts.textRegular}>{error}</Text>
-        ) : (
-          <Text style={Fonts.textRegular}>
-            {t('example.helloUser', { name: data?.name })}
-          </Text>
-        )}
-      </View>
-      <View
-        style={[
-          Layout.row,
-          Layout.rowHCenter,
-          Gutters.smallHPadding,
-          Gutters.largeVMargin,
-          Common.backgroundPrimary,
-        ]}
-      >
-        <Text style={[Layout.fill, Fonts.textCenter, Fonts.textSmall]}>
-          {t('example.labels.userId')}
-        </Text>
-        <TextInput
-          onChangeText={setUserId}
-          editable={!isLoading}
-          keyboardType={'number-pad'}
-          maxLength={1}
-          value={userId}
-          selectTextOnFocus
-          style={[Layout.fill, Common.textInput]}
-        />
-      </View>
-      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>DarkMode :</Text>
-
-      <TouchableOpacity
-        style={[Common.button.rounded, Gutters.regularBMargin]}
-        onPress={() => onChangeTheme({ darkMode: null })}
-      >
-        <Text style={Fonts.textRegular}>Auto</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[Common.button.outlineRounded, Gutters.regularBMargin]}
-        onPress={() => onChangeTheme({ darkMode: true })}
-      >
-        <Text style={Fonts.textRegular}>Dark</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[Common.button.outline, Gutters.regularBMargin]}
-        onPress={() => onChangeTheme({ darkMode: false })}
-      >
-        <Text style={Fonts.textRegular}>Light</Text>
-      </TouchableOpacity>
+    > 
+    <View><Text>Hey...</Text></View>
     </ScrollView>
   )
 }

@@ -28,11 +28,13 @@
     "react-native-reanimated": "^2.3.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
+    "react-native-tcp": "^4.0.0",
     "react-native-zeroconf": "^0.13.6",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-flipper": "^2.0.1",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -78,5 +80,8 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!@react-native|react-native)"
     ]
+  },
+  "browser": {
+    "net": "react-native-tcp"
   }
 }

@@ -12,6 +12,7 @@ const StartupContainer = () => {
   const { t } = useTranslation()
 
   const init = async () => {
+    
     await new Promise(resolve =>
       setTimeout(() => {
         resolve(true)
@@ -19,6 +20,7 @@ const StartupContainer = () => {
     )
     await setDefaultTheme({ theme: 'default', darkMode: null })
     navigateAndSimpleReset('Main')
+    
   }
 
   useEffect(() => {
