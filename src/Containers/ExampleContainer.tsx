@@ -63,20 +63,65 @@ const ExampleContainer = () => {
  
 // OR, if not shimming via package.json "browser" field:
 // var net = require('react-native-tcp')
+ var skt;
+var server = net.createServer((socket:any) => { 
+  const sockAddress=socket['_address']['address'];
+  socket.on('close', (data:any) => { 
+    const index = sockets.findIndex( (o:any) => { 
+      const Address=o['_address']['address'];
+        return (Address===sockAddress) && 
+(o.remotePort === socket.remotePort); 
+    }); 
+    if (index !== -1) sockets.splice(index, 1); 
+sockets.forEach((sock:any) => { 
+  const address=sock['_address']['address'];
+sock.write(`${address} disconnected\n`); 
+}); 
  
-var server = net.createServer(function(socket:any) {
-  socket.write('excellent!');
-}).listen(12345);
+}); 
+
+
+  socket.on('data', (data:any) => { 
+    
+    const d1="Hey hi.....";
+    sockets.forEach((sock:any) => { 
+      const address=sock['_address']['address'];
+      const port=sock['_address']['port'];
+      console.log("address",address,"---port",port);
+    sock.write(`${address}:${port} said ${d1}\n`); 
+    }); 
+     }); 
+   } ).listen(12345);
+
+let sockets:any=[];
+server.on('connection',  (socket:any) => { 
+      console.log("buffer",socket);
+  const str = socket.toString('utf8');//Buffer.from(socket.toString(), 'base64').toString('ascii'); 
+      console.log('--decodedJsonObject-->', str)
+  
+   var clientAddress = `${socket.remoteAddress}:${socket.remotePort}`; 
+  console.log(`new client connected: ${clientAddress}`); 
+  sockets.push(socket);
  
-var client = net.createConnection(12345);
- 
-client.on('error', function(error:any) {
-  console.log(error)
+   }); 
+
+
+   
+
+
+var client = net.createConnection(12345,()=>{
+   // Write on the socket
+   console.log("writing to client......");
+   client.write('Hello server!');
+   
 });
  
-client.on('data', function(data:any) {
-  console.log('message was received', data)
-});
+ 
+ 
+// client.on('data', function(data:any) {
+//   console.log('message was received', data)
+//   // socket.write('excellent!');
+// });
 
   
 
