@@ -15,7 +15,9 @@ import { useTheme } from '@/Hooks'
 import { useLazyFetchOneQuery } from '@/Services/modules/users'
 import { changeTheme, ThemeState } from '@/Store/Theme'
 import Zeroconf from 'react-native-zeroconf'
-
+//import { io } from "socket.io-client";
+const { Server_socket } = require("socket.io");
+import { cos } from 'react-native-reanimated'
   var net = require('net');
 const zeroconf = new Zeroconf()
 
@@ -48,23 +50,48 @@ const ExampleContainer = () => {
    
 
   })
-  useEffect(()=>{
-   
-    console.log("Meghraj");
-   
-    zeroconf.scan("http","tcp","local");
-    zeroconf.unpublishService("sunlightenacp");
-    zeroconf.publishService('http',"tcp","local","Meghraj",12345,{
-    name:"Meghraj",
-    ip:"192.168.0.121"
-  });
 
+  var server:any;
+
+  function builtSocket(){
+   
+    console.log('websocket')
+
+const URL = "http://192.168.0.140";
+ 
+const io = new Server_socket(server);
 
  
+io.on('connection', (socket:any) => {
+  console.log('a user connected');
+});
+
+
+     
+  }
+  useEffect(()=>{
+    
+   
+      console.log("Meghraj");
+     
+      zeroconf.scan("http","tcp","local");
+      zeroconf.unpublishService("sunlightenacp");
+      zeroconf.publishService('http',"tcp","local","Meghraj",12345,{
+      name:"Meghraj",
+      ip:"192.168.0.121"
+      });
+  
+      
+    
+  });
+
+  
+ 
 // OR, if not shimming via package.json "browser" field:
-// var net = require('react-native-tcp')
+var net = require('react-native-tcp')
  var skt;
-var server = net.createServer((socket:any) => { 
+ let sockets:any=[];
+ server = net.createServer((socket:any) => { 
   const sockAddress=socket['_address']['address'];
   socket.on('close', (data:any) => { 
     const index = sockets.findIndex( (o:any) => { 
@@ -81,6 +108,7 @@ sock.write(`${address} disconnected\n`);
 }); 
 
 
+
   socket.on('data', (data:any) => { 
     
     const d1="Hey hi.....";
@@ -93,7 +121,7 @@ sock.write(`${address} disconnected\n`);
      }); 
    } ).listen(12345);
 
-let sockets:any=[];
+ 
 server.on('connection',  (socket:any) => { 
       console.log("buffer",socket);
   const str = socket.toString('utf8');//Buffer.from(socket.toString(), 'base64').toString('ascii'); 
@@ -109,12 +137,12 @@ server.on('connection',  (socket:any) => {
    
 
 
-var client = net.createConnection(12345,()=>{
-   // Write on the socket
-   console.log("writing to client......");
-   client.write('Hello server!');
+// var client = net.createConnection(12345,()=>{
+//    // Write on the socket
+//    console.log("writing to client......");
+//    client.write('Hello server!');
    
-});
+// });
  
  
  
@@ -136,6 +164,9 @@ var client = net.createConnection(12345,()=>{
         Gutters.smallHPadding,
       ]}
     > 
+    <Button title='Build Socket' onPress={()=>{
+      //builtSocket();
+    }}></Button>
     <View><Text>Hey...</Text></View>
     </ScrollView>
   )
